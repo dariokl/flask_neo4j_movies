@@ -76,7 +76,7 @@ class Movie():
     
     def add_and_return_movie(self, title, released):
         with self.driver.session() as session:
-            result  = session.read_transaction(
+            result  = session.write_transaction(
                 self._add_and_return_movie, title, released
             )
 
@@ -86,8 +86,9 @@ class Movie():
     def _add_and_return_movie(tx, title, released):
         query = """
         MERGE(m:Movie {title: $title, released : $released})
-        ON MATCH RETURN m.title as title, m.released as released
-        ON CREATE RETURN m.title as title, m.released as releasd
+        ON CREATE SET m.title = $title, m.released = $released
+
+        RETURN m.title as title, m.released as released
         """
 
         map={'title': title, 'released' : released}

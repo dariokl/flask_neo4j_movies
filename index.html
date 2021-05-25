@@ -15,6 +15,9 @@
 </style>
 
 <body>
+  <div class="message">
+    <p></p>
+  </div>
   <div class="py-5">
     <div class="container">
       <div class="row">
@@ -26,7 +29,7 @@
           <form id='addMovie'>
             <div class="form-group">
               <label for="exampleInputEmail1">Add Movie Name</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+              <input type="text" class="form-control" id="movieName" aria-describedby="emailHelp"
                 placeholder="Enter Movie Name">
               <small id="emailHelp" class="form-text text-muted">Let us know the title of movie.</small>
               <label for="exampleInputEmail1">Add Movie Release Date</label>
@@ -39,7 +42,7 @@
           <form id='searchMovie'>
             <div class="form-group">
               <label for="exampleInputEmail1">Movie Name</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+              <input type="text" class="form-control" id="searchName" aria-describedby="emailHelp"
                 placeholder="Enter Movie Name">
               <small id="emailHelp" class="form-text text-muted">Let us know the title of movie.</small>
             </div>
@@ -81,14 +84,14 @@
     function searchToggler() {
       $("#addMovie").hide()
       $("#searchMovie").show()
-      
+
     }
     function addToggler() {
       $("#searchMovie").hide()
       $("#addMovie").show()
     }
 
-    searchToggle.on('click', function() {
+    searchToggle.on('click', function () {
       searchToggler()
     })
 
@@ -132,21 +135,44 @@
             movie.title,
             movie.released,
             movie.cast
-
           )
         }
       });
 
-
-    $('#searchMovie').submit(function (e) {
-      const data = { 'title': $('#exampleInputEmail1').val() };
-      fetch('http://127.0.0.1:5000/movies/movie/', {
-        method: 'GET', // or 'PUT'
+    $('#addMovie').submit(function (e) {
+      data = {
+        'title': $('#movieName').val(),
+        'released': $('#releaseDate').val()
+      }
+      fetch('http://127.0.0.1:5000/movies/add/movie/', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        data = JSON.stringify(data)
-     
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          console.log(response.json())
+          $('.message p').text('Succesfuly created new Movie')
+
+
+      })
+
+      console.log(data)
+      console.log('a')
+      e.preventDefault()
+    })
+
+
+    $('#searchMovie').submit(function (e) {
+      const data = { 'title': $('#searchName').val() };
+      fetch('http://127.0.0.1:5000/movies/movie/', {
+        method: 'POST', // or 'PUT'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+
       })
         .then(response => response.json())
         .then(data => {
@@ -154,7 +180,7 @@
           var container = $(".row");
           $('.card').remove()
           var cardBox = `
-      <div class="col-8">
+        <div class="col-8">
           <div class="card">
             <div class="card-block">
               <h4 class="card-title">${data.title}</h4>
