@@ -9,9 +9,12 @@ from .movie_parser import movie_parser, movie_fields
 class Movie(Resource):
     @marshal_with(movie_fields)
     def get(self):
-  
-        return movie_crud.return_all_movies()
+        args = movie_parser.parse_args()
+        data = args
+        title = data['title']
 
+        return movie_crud.search_and_return_movie(title)
+ 
     @marshal_with(movie_fields)
     def post(self):
         args = movie_parser.parse_args()
@@ -19,4 +22,11 @@ class Movie(Resource):
         if data['title']:
             return movie_crud.search_and_return_movie(data['title'])
 
-movies_api.add_resource(Movie, '/')
+class Movies(Resource):
+    @marshal_with(movie_fields)
+    def get(self):
+
+        return movie_crud.return_all_movies()
+
+movies_api.add_resource(Movie, '/movie/')
+movies_api.add_resource(Movies,'/')

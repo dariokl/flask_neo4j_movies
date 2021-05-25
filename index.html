@@ -19,7 +19,24 @@
     <div class="container">
       <div class="row">
         <div class="col-4">
-          <form id='movieSearch'>
+          <div class="row">
+            <button class='btn-primary is-small search'>Search</button>
+            <button class='btn-primary is-small add'>Add Movie</button>
+          </div>
+          <form id='addMovie'>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Add Movie Name</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                placeholder="Enter Movie Name">
+              <small id="emailHelp" class="form-text text-muted">Let us know the title of movie.</small>
+              <label for="exampleInputEmail1">Add Movie Release Date</label>
+              <input type="text" class="form-control" id="releaseDate" aria-describedby="emailHelp"
+                placeholder="Enter release date">
+              <small id="emailHelp" class="form-text text-muted">Let us know the release year.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+          <form id='searchMovie'>
             <div class="form-group">
               <label for="exampleInputEmail1">Movie Name</label>
               <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
@@ -29,6 +46,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
+
         <div class="col-8">
           <div id='appendRow' class="row hidden-md-up">
           </div>
@@ -55,6 +73,30 @@
 <script>
   $(document).ready(function () {
     var movies;
+    var searchToggle = $('.search')
+    var addToggle = $('.add')
+
+    $('#addMovie').hide()
+
+    function searchToggler() {
+      $("#addMovie").hide()
+      $("#searchMovie").show()
+      
+    }
+    function addToggler() {
+      $("#searchMovie").hide()
+      $("#addMovie").show()
+    }
+
+    searchToggle.on('click', function() {
+      searchToggler()
+    })
+
+    addToggle.on('click', function () {
+      addToggler()
+    })
+
+
 
     function AddCards(title, released, cast) {
       var container = $("#appendRow");
@@ -81,7 +123,7 @@
 
     }
 
-    fetch("http://127.0.0.1:5000/movie/")
+    fetch("http://127.0.0.1:5000/movies/")
       .then((response) => response.json())
       .then((data) => {
         movies = data;
@@ -96,14 +138,15 @@
       });
 
 
-    $('#movieSearch').submit(function (e) {
+    $('#searchMovie').submit(function (e) {
       const data = { 'title': $('#exampleInputEmail1').val() };
-      fetch('http://127.0.0.1:5000/movie/', {
-        method: 'POST', // or 'PUT'
+      fetch('http://127.0.0.1:5000/movies/movie/', {
+        method: 'GET', // or 'PUT'
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        data = JSON.stringify(data)
+     
       })
         .then(response => response.json())
         .then(data => {

@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-venv_ponzi
+venv_neo4j
 .env
 .vscode/
 db.json

@@ -73,6 +73,32 @@ class Movie():
             return result.data()[0]
         except Exception as e:
             print(str(e))
+    
+    def add_and_return_movie(self, title, released):
+        with self.driver.session() as session:
+            result  = session.read_transaction(
+                self._add_and_return_movie, title, released
+            )
+
+            return result
+
+    @staticmethod
+    def _add_and_return_movie(tx, title, released):
+        query = """
+        MERGE(m:Movie {title: $title, released : $released})
+        ON MATCH RETURN m.title as title, m.released as released
+        ON CREATE RETURN m.title as title, m.released as releasd
+        """
+
+        map={'title': title, 'released' : released}
+
+        result = tx.run(query, map)
+
+        try:
+            return result.data()[0]
+        except Exception as e:
+            print(str(e))
+
 
 movie_crud = Movie(uri=config['development'].BOLT_URL,
                    user=config['development'].USERNAME, password=config['development'].PASSWORD)
