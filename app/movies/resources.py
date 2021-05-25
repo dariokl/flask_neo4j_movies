@@ -2,7 +2,7 @@ from flask_restful import Resource, abort, fields, marshal_with
 
 from . import movies_api
 
-from .models import movie_crud
+from .service import movie_crud
 from .movie_parser import movie_parser, movie_fields
 
 
