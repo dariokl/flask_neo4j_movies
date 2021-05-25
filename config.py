@@ -13,9 +13,10 @@ class Config():
     SECRET_KEY = os.environ.get('SECRET_KEY')
     DEBUG = False
     TESTING = False
-    USERNAME = 'neo4j'
-    PASSWORD = 'polishers-flakes-sports'
-    BOLT_URL = 'bolt://54.163.58.120:7687'
+    # Bolt is shut down create your own sand-box and pass the auth here.
+    USERNAME = ''
+    PASSWORD = ''
+    BOLT_URL = ''
 
     @staticmethod
     def init_app(app):
