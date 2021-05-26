@@ -16,7 +16,9 @@ def create_app(config_name):
 
 
     from .movies import movies_bp
+    from .serve_static import static_bp
 
     app.register_blueprint(movies_bp)
+    app.register_blueprint(static_bp)
 
     return app

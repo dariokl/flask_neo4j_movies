@@ -99,6 +99,29 @@ class Movie():
             return result.data()[0]
         except Exception as e:
             print(str(e))
+    
+    def delete_movie(self, title):
+        with self.driver.session() as session:
+            result = session.write_transaction(self._delete_movie, title)
+
+            return result
+
+    @staticmethod
+    def _delete_movie(tx, title):
+        query = """
+        MATCH(m:Movie)
+        WHERE m.title = $title
+
+        DETACH DELETE m
+        """
+        map = {'title': title}
+
+        result =tx.run(query, map)
+
+        try:
+            return result.data()[0]
+        except Exception as e:
+            print(str(e))
 
 
 movie_crud = Movie(uri=config['development'].BOLT_URL,

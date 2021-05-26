@@ -22,6 +22,12 @@ class Movie(Resource):
         data = args
 
         return movie_crud.add_and_return_movie(data['title'], data['released'])
+    
+    def delete(self):
+        args = movie_parser.parse_args()
+        data = args
+
+        return movie_crud.delete_movie(data['title'])
         
 
 class GetAllMovies(Resource):
@@ -31,6 +37,6 @@ class GetAllMovies(Resource):
         return movie_crud.return_all_movies()
 
 
-movies_api.add_resource(Movie, '/add/movie/')
-movies_api.add_resource(GetMovieByTitle, '/movie/')
+movies_api.add_resource(Movie, '/movie/')
+movies_api.add_resource(GetMovieByTitle, '/get/movie')
 movies_api.add_resource(GetAllMovies,'/')

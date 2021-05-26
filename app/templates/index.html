@@ -101,10 +101,12 @@
 
 
 
-    function AddCards(title, released, cast) {
+
+    function AddCards(title, released, cast, counter) {
+
       var container = $("#appendRow");
       var cardBox = `
-      <div class="col-8">
+      <div class="col-8" id="${title}">
           <div class="card">
             <div class="card-block">
               <h4 class="card-title">${title}</h4>
@@ -115,15 +117,13 @@
                 <li> ${item}.</li>
                 `).join('')}
                 </ul>
-                </div>
-              <a href="#" class="card-link">link</a>
-              <a href="#" class="card-link">Second link</a>
+       
+                <button class="btn btn-danger delete" id="${title}">Delete Movie</button>
             </div>
           </div>
         </div>
       `;
       container.append(cardBox);
-
     }
 
     fetch("http://127.0.0.1:5000/movies/")
@@ -134,17 +134,36 @@
           AddCards(
             movie.title,
             movie.released,
-            movie.cast
+            movie.cast,
           )
+
         }
       });
+
+    $(document).on("click", ".delete", function () {
+      var clickedBtnID = $(this).attr('id');
+      data = { 'title': clickedBtnID }
+      fetch('http://127.0.0.1:5000/movies/movie/', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          $('.message p').text('Successfully deleted Movie')
+        })
+        
+     $(this).parents('.card').hide()
+
+    });
 
     $('#addMovie').submit(function (e) {
       data = {
         'title': $('#movieName').val(),
         'released': $('#releaseDate').val()
       }
-      fetch('http://127.0.0.1:5000/movies/add/movie/', {
+      fetch('http://127.0.0.1:5000/movies/movie/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -153,10 +172,10 @@
       })
         .then(response => {
           console.log(response.json())
-          $('.message p').text('Succesfuly created new Movie')
+          $('.message p').text('successfully created new Movie')
 
 
-      })
+        })
 
       console.log(data)
       console.log('a')
@@ -166,7 +185,7 @@
 
     $('#searchMovie').submit(function (e) {
       const data = { 'title': $('#searchName').val() };
-      fetch('http://127.0.0.1:5000/movies/movie/', {
+      fetch('http://127.0.0.1:5000/movies/get/movie', {
         method: 'POST', // or 'PUT'
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +195,6 @@
       })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data);
           var container = $(".row");
           $('.card').remove()
           var cardBox = `
@@ -192,8 +210,7 @@
                 `).join('')}
                 </ul>
                 </div>
-              <a href="#" class="card-link">link</a>
-              <a href="#" class="card-link">Second link</a>
+                <button class="btn btn-danger delete" id="${data.title}">Delete Movie</button>
             </div>
           </div>
         </div>
@@ -207,4 +224,6 @@
 
     })
   });
+
+
 </script>
